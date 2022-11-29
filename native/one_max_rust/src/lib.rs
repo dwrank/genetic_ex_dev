@@ -1,6 +1,10 @@
-#[rustler::nif]
-fn add(a: i64, b: i64) -> i64 {
-    a + b
+pub mod one_max;
+
+use rustler::{Env, LocalPid};
+
+#[rustler::nif(schedule = "DirtyCpu")]
+fn run<'a>(env: Env<'a>, caller: LocalPid, interval: u32) -> one_max::OneMaxStatus {
+    return one_max::run(env, caller, interval);
 }
 
-rustler::init!("Elixir.OneMaxRust", [add]);
+rustler::init!("Elixir.GeneticExDev.OneMax.OneMaxRust", [run]);
