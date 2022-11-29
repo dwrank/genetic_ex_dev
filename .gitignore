@@ -25,5 +25,13 @@ genetic_ex_dev-*.tar
 # Temporary files, for example, from tests.
 /tmp/
 
+# vim temp files
 *~
 *.swp
+
+# lock files
+mix.lock
+native/*/Cargo.lock
+
+# generated libs
+priv/native/*.so
