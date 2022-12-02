@@ -7,10 +7,10 @@ defmodule GeneticExDev.OneMax.Helper do
 
     wait = fn wait ->
       receive do
-        %{status: :update} = status ->
+        %{state: :running} = status ->
           IO.inspect status
           wait.(wait)
-        %{status: :done} = status ->
+        %{state: :done} = status ->
           IO.inspect status
       end
     end

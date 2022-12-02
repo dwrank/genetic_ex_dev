@@ -5,7 +5,7 @@ use rustler::{Atom, Encoder, Env, NifStruct, LocalPid};
 
 mod atoms {
     rustler::atoms! {
-        update,
+        running,
         done,
     }
 }
@@ -19,7 +19,7 @@ struct Chromosome {
 #[module = "OneMax.Native.OneMaxStatus"]
 pub struct OneMaxStatus {
     pid: LocalPid,
-    status: Atom,
+    state: Atom,
     iters: u32,
     sum: u32,
     solution: Vec<u8>,
@@ -40,7 +40,7 @@ pub fn run<'a>(env: Env<'a>, caller: LocalPid, interval: u32) -> OneMaxStatus {
         }
 
         if i % interval == 0 {
-            send_update(env, caller, atoms::update(), i, &population);
+            send_update(env, caller, atoms::running(), i, &population);
         }
 
         let pairs = selection(population);
@@ -60,7 +60,7 @@ fn send_update<'a>(env: Env<'a>, caller: LocalPid, state: Atom, iters: u32, popu
 
 fn get_status<'a>(env: Env<'a>, state: Atom, iters: u32, population: &Vec<Chromosome>) -> OneMaxStatus {
     let chr = population.iter().next().unwrap();
-    return OneMaxStatus {pid: env.pid(), status: state, iters: iters, sum: chr.sum, solution: chr.data.clone()};
+    return OneMaxStatus {pid: env.pid(), state: state, iters: iters, sum: chr.sum, solution: chr.data.clone()};
 }
 
 fn create_population(pop_size: usize, chrom_size: usize) -> Vec<Chromosome> {
