@@ -30,8 +30,8 @@ defmodule GeneticExDev.MixProject do
 
   # optional, always do a release build
   defp rustler_crates do
-    [one_max_rust: [
-      path: "native/one_max_rust",
+    [genetic_max_rust: [
+      path: "native/genetic_rust",
       mode: :release, #(if Mix.env == :prod, do: :release, else: :debug),
     ]]
   end

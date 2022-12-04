@@ -16,7 +16,7 @@ struct Chromosome {
 }
 
 #[derive(NifStruct)]
-#[module = "OneMax.Native.OneMaxStatus"]
+#[module = "GeneticExDev.Native.OneMaxStatus"]
 pub struct OneMaxStatus {
     pid: LocalPid,
     state: Atom,

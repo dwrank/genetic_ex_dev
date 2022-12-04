@@ -1,11 +1,11 @@
 [package]
-name = "one_max_rust"
+name = "genetic_rust"
 version = "0.1.0"
 authors = []
 edition = "2018"
 
 [lib]
-name = "one_max_rust"
+name = "genetic_rust"
 path = "src/lib.rs"
 crate-type = ["cdylib"]
 
