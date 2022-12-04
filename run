@@ -32,6 +32,4 @@ fi
 
 echo "Running $mod $impl ..."
 
-mod_dir="lib/${mod}"
-
-MIX_ENV=prod mix run "${mod_dir}/main.exs" "$impl"
+MIX_ENV=prod mix run "lib/main.exs" "$mod" "$impl"

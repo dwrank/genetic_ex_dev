@@ -1,4 +1,4 @@
-defmodule GeneticExDev.OneMax.OneMaxEx do
+defmodule GeneticExDev.OneMaxEx do
   alias GeneticExDev.Genetic
 
   def run(caller, status_interval) do

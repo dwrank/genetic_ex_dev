@@ -1,9 +1,13 @@
-defmodule GeneticExDev.OneMax.Helper do
+defmodule GeneticExDev.Helper do
 
-  def run(run_fn) do
+  alias GeneticExDev.OneMaxEx
+  alias GeneticExDev.GeneticRust
+
+  def start(run_fn) do
+    caller = self()
     start_time = DateTime.utc_now()
 
-    _pid = spawn(fn -> run_fn.() end)
+    _pid = spawn(fn -> run_fn.(caller) end)
 
     wait = fn wait ->
       receive do
@@ -22,4 +26,7 @@ defmodule GeneticExDev.OneMax.Helper do
     IO.inspect time, label: "Time"
   end
 
+  def run("one_max", "ex"), do: start(fn caller -> OneMaxEx.run(caller, 20) end)
+  def run("one_max", "rust"), do: start(fn caller -> GeneticRust.run_one_max(caller, 100) end)
+  def run(args), do: IO.inspect args, label: "Invalid args"
 end
