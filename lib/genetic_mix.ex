@@ -1,4 +1,7 @@
-defmodule GeneticExDev.Genetic do
+alias GeneticExDev.GeneticRust
+alias GeneticExDev.Types.Chromosome
+
+defmodule GeneticExDev.GeneticMix do
   def run(conf) do
     times = %{eval: 0, sel: 0, cx: 0, mut: 0}
     pop = initialize(conf)
@@ -24,7 +27,7 @@ defmodule GeneticExDev.Genetic do
 
       {population, times}
       |> select()
-      |> crossover()
+      |> crossover2()
       |> mutation()
       |> evolve(conf, i+1)
     end
@@ -54,14 +57,35 @@ defmodule GeneticExDev.Genetic do
     {stream, %{times | sel: time}}
   end
 
+  def crossover2({stream, times}) do
+    start_time = DateTime.utc_now()
+    pop = Enum.reduce(stream, [],
+      fn {p1, p2}, acc ->
+        {g1, g2} = GeneticRust.crossover_vec_u8(p1.genes, p2.genes)
+        [
+          %Chromosome{ p1 | genes: g1},
+          %Chromosome{ p2 | genes: g2}
+          | acc
+        ]
+      end
+    )
+    end_time = DateTime.utc_now()
+    time = times.cx + DateTime.diff(end_time, start_time, :microsecond) / 1000000.0
+    {pop, %{times | cx: time}}
+  end
+
   def crossover({stream, times}) do
     start_time = DateTime.utc_now()
     pop = Enum.reduce(stream, [],
       fn {p1, p2}, acc ->
-        cx_point = :rand.uniform(length(p1))
-        {h1, t1} = Enum.split(p1, cx_point)
-        {h2, t2} = Enum.split(p2, cx_point)
-        [h1 ++ t2, h2 ++ t1 | acc]
+        cx_point = :rand.uniform(length(p1.genes))
+        {h1, t1} = Enum.split(p1.genes, cx_point)
+        {h2, t2} = Enum.split(p2.genes, cx_point)
+        [
+          %Chromosome{ p1 | genes: h1 ++ t2},
+          %Chromosome{ p2 | genes: h2 ++ t1}
+          | acc
+        ]
       end
     )
     end_time = DateTime.utc_now()
@@ -74,7 +98,9 @@ defmodule GeneticExDev.Genetic do
     pop = Enum.map(population,
       fn chromosome ->
         if :rand.uniform() < 0.05 do
-          Enum.shuffle(chromosome)
+          #%Chromosome{ chromosome | genes: Enum.shuffle(chromosome.genes)}
+          #struct(Chromosome, GeneticRust.shuffle(chromosome))
+          %Chromosome{ chromosome | genes: GeneticRust.shuffle_vec_u8(chromosome.genes)}
         else
           chromosome
         end
